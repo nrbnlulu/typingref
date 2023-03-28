@@ -66,4 +66,5 @@ jobs:
 
       - name: mypy checks
         run: |
+          poetry run pip install mypy
           poetry run mypy ./typingref
