@@ -1,10 +1,19 @@
-![logo.png](docs%2Fassets%2Flogo.png)
+![Logo](./assets/logo.png){ align=center width=350}
 *Introspect Python type annotation, with ease.*
 
-Modern Python libraries often use type annotations,
-this library is intended to help "de/serialize" Python type hints to something
-you can work with.
 
+## Installation
+
+<div class="termy">
+
+```console
+
+$ pip install typingref
+
+---> 100%
+```
+
+</div>
 
 ### Sample Usage:
 

@@ -1,0 +1,88 @@
+# yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
+site_name: TypingRref
+site_description: typingref - introspect type hints with ease.
+site_url: https://nrbnlulu.github.io/typingref/
+site_author: Nir Benlulu
+repo_name: nrbnlulu/qtgqql
+repo_url: https://github.com/nrbnlulu/typingref
+
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: deep purple
+      accent: teal
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    - scheme: slate
+      primary: deep purple
+      accent: teal
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+  font:
+    text: Open Sans
+    code: Fira Code
+  logo: assets/logo.png
+  favicon: assets/logo.png
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+
+plugins:
+  - search
+  - mike
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [ typingref ]
+          options:
+            annotations_path: source
+            docstring_style: google
+
+
+nav:
+  - typingref:
+      - Overview: ./index.md
+      - API: ./reference.md
+
+
+markdown_extensions:
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - attr_list
+  - md_in_html
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.details
+  - admonition
+  - tables
+  - toc:
+      permalink: "#"
+  - markdown_include.include:
+      base_path: ./docs
+
+
+copyright: Copyright &copy; Nir Benlulu 2023 <a href="https://github/nrbnlulu.com>Nir</a>
+
+extra:
+  version:
+    provider: mike
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/nrbnlulu/typingref
+
+extra_css:
+  - css/termynal.css
+  - css/custom.css
+extra_javascript:
+  - js/termynal.js
+  - js/custom.js
+watch:
+  - .
