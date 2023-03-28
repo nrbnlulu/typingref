@@ -62,7 +62,7 @@ class TypeHinter:
         # future annotation
         if isinstance(tp, str):
 
-            def foo() -> tp:
+            def foo() -> tp:  # type: ignore
                 ...
 
             tp = typing.get_type_hints(foo)["return"]

@@ -63,31 +63,8 @@ jobs:
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --all-extras
 
-      - name: Install Qt Dependencies
-        shell: bash
-        run: |
-          if [ "$RUNNER_OS" == "macOS" ]; then
-            brew install ffmpeg
-          elif [ "$RUNNER_OS" == "Windows" ]; then
-            choco install ffmpeg
-          elif [ "$RUNNER_OS" == "Linux" ]; then
-          sudo apt update -y
-          sudo apt install libxcb-icccm4 libxcb-image0 libxcb-keysyms1 \
-                           libxkbcommon-x11-0 xvfb libxcb-randr0 \
-                           libxcb-render-util0 libxcb-xinerama0 libegl1 \
-                           libxcb-shape0
-          sudo apt-get install -y libgles2-mesa-dev
-          fi
-
       - name: Run tests
-        shell: bash
-        run: |
-          if [ "$RUNNER_OS" == "Windows" ]; then
-            poetry run make test
-          elif [ "$RUNNER_OS" == "Linux" ]; then
-            poetry run xvfb-run make test
-          fi
-
+        run: poetry run pytest
 
       - name: Codecov
         uses: codecov/codecov-action@v3.1.1
