@@ -1,50 +1,7 @@
-from typing import Generic, List, Optional, TypeVar, Union, get_args, get_origin
+from typing import Generic, List, Optional, TypeVar, Union
 
 import pytest
 from typingref.core import UNSET, TypeHinter, UnsetType, ensure
-
-
-class TestFromAnnotation:
-    @pytest.mark.parametrize("tp", [int, float, str, bool, object])
-    def test_simple_type(self, tp):
-        th = TypeHinter.from_annotations(tp)
-        assert th.type is tp
-
-    @pytest.mark.parametrize("tp", [int, float, str, bool, object])
-    def test_future_annotations(self, tp):
-        th = TypeHinter.from_annotations(tp.__name__)
-        assert th.type is tp
-
-    @pytest.mark.parametrize("tp", [list[float], Optional[str]])
-    def test_containers(self, tp):
-        th = TypeHinter.from_annotations(tp)
-        assert th.type[get_args(tp)[0]] == tp
-        assert th.of_type[0].type is get_args(tp)[0]
-
-    def test_unions(self):
-        tp = Union[str, int]
-        th = TypeHinter.from_annotations(tp)
-        assert th.type is get_origin(tp)
-        for index, type_ in enumerate(th.of_type):
-            assert type_.type is get_args(tp)[index]
-
-    def test_union_with_optionals(self):
-        """Union with one optional basically means that the type is the union
-        is optional."""
-        tp = Union[Optional[str], Optional[int]]
-        th = TypeHinter.from_annotations(tp)
-        assert th.type is Optional
-        inner = th.of_type[0]
-        assert inner.of_type[0].type is str
-        assert inner.of_type[1].type is int
-
-    def test_nested(self):
-        tp = list[Union[str, int]]
-        th = TypeHinter.from_annotations(tp)
-        assert th.type is list
-        assert th.of_type[0].type is Union
-        assert th.of_type[0].of_type[0].type is str
-        assert th.of_type[0].of_type[1].type is int
 
 
 class TestToAnnotation:
@@ -90,7 +47,7 @@ class TestToAnnotation:
         class A(Generic[T]):
             ...
 
-        assert TypeHinter.from_annotations(A[int]).as_annotation() == A[int]
+        assert TypeHinter.from_annotation(A[int]).as_annotation() == A[int]
 
 
 class TestFromString:
@@ -111,7 +68,7 @@ class TestFromString:
             return cont_name + "[" + inner.__name__ + "]"
 
         th = TypeHinter.from_string(as_str(), ns={})
-        assert th == TypeHinter.from_annotations(container[inner])
+        assert th == TypeHinter.from_annotation(container[inner])
 
     def test_user_type(self):
         class MyType:
@@ -140,31 +97,31 @@ class TestUnsetType:
 
 
 def test_is_union():
-    th = TypeHinter.from_annotations(Union[str, int])
+    th = TypeHinter.from_annotation(Union[str, int])
     assert th.is_union()
-    th = TypeHinter.from_annotations(int)
+    th = TypeHinter.from_annotation(int)
     assert not th.is_union()
 
 
 @pytest.mark.parametrize("list_class", (list, List))
 def test_is_list(list_class):
-    th = TypeHinter.from_annotations(list_class[int])
+    th = TypeHinter.from_annotation(list_class[int])
     assert th.is_list()
-    th = TypeHinter.from_annotations(int)
+    th = TypeHinter.from_annotation(int)
     assert not th.is_list()
 
 
 def test_is_optional():
-    th = TypeHinter.from_annotations(Optional[str])
+    th = TypeHinter.from_annotation(Optional[str])
     assert th.is_optional()
-    th = TypeHinter.from_annotations(int)
+    th = TypeHinter.from_annotation(int)
     assert not th.is_optional()
 
 
 class TestStringify:
     @pytest.mark.parametrize("tp", [int, float, str, bool, object])
     def test_builtins(self, tp):
-        assert TypeHinter.from_annotations(tp).stringify() == tp.__name__
+        assert TypeHinter.from_annotation(tp).stringify() == tp.__name__
 
     @pytest.mark.parametrize(
         "expected",
@@ -176,17 +133,17 @@ class TestStringify:
 
 class TestStripOptionals:
     def test_flat(self):
-        th = TypeHinter.strip_optionals(TypeHinter.from_annotations(Optional[str]))
+        th = TypeHinter.strip_optionals(TypeHinter.from_annotation(Optional[str]))
         assert th.type is str
 
     def test_inner_optional(self):
-        th = TypeHinter.strip_optionals(TypeHinter.from_annotations(list[Optional[str]]))
+        th = TypeHinter.strip_optionals(TypeHinter.from_annotation(list[Optional[str]]))
 
         assert th.type is list
         assert th.of_type[0].type is str
 
     def test_union(self):
-        th = TypeHinter.from_annotations(Union[Optional[str], Optional[int], float])
+        th = TypeHinter.from_annotation(Union[Optional[str], Optional[int], float])
         th = TypeHinter.strip_optionals(th)
         assert th.of_type[0].type is str
         assert th.of_type[1].type is int
@@ -195,19 +152,19 @@ class TestStripOptionals:
 
 class TestCompare:
     def test_ne(self):
-        assert TypeHinter.from_annotations(str) != TypeHinter.from_annotations(int)
+        assert TypeHinter.from_annotation(str) != TypeHinter.from_annotation(int)
 
     def test_eq(self):
-        assert TypeHinter.from_annotations(str) == TypeHinter.from_annotations(str)
+        assert TypeHinter.from_annotation(str) == TypeHinter.from_annotation(str)
 
     def test_nested_ne(self):
-        assert TypeHinter.from_annotations(list[str]) != TypeHinter.from_annotations(list[int])
+        assert TypeHinter.from_annotation(list[str]) != TypeHinter.from_annotation(list[int])
 
     def test_nested_eq(self):
-        assert TypeHinter.from_annotations(list[str]) == TypeHinter.from_annotations(list[str])
+        assert TypeHinter.from_annotation(list[str]) == TypeHinter.from_annotation(list[str])
 
     def test_not_th_instance(self):
-        assert TypeHinter.from_annotations(str) != object()
+        assert TypeHinter.from_annotation(str) != object()
 
 
 def test_ensure_success():

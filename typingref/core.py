@@ -1,5 +1,4 @@
 import inspect
-import typing
 from typing import Any, List, Optional, Type, TypeVar, Union, get_args, get_origin
 
 
@@ -55,17 +54,13 @@ class TypeHinter:
 
         annotation = get_type_hints(tmp, localns=ns, globalns=globals())["t"]
 
-        return cls.from_annotations(annotation)
+        return cls.from_annotation(annotation)
 
     @classmethod
-    def from_annotations(cls, tp: Any) -> "TypeHinter":
+    def from_annotation(cls, tp: Any, ns: Optional[dict] = None) -> "TypeHinter":
         # future annotation
         if isinstance(tp, str):
-
-            def foo() -> tp:  # type: ignore
-                ...
-
-            tp = typing.get_type_hints(foo)["return"]
+            return TypeHinter.from_string(tp, ns or {})
 
         if args := get_args(tp):
             # handle optional
@@ -78,17 +73,17 @@ class TypeHinter:
                             cls(
                                 type=Union,
                                 of_type=tuple(
-                                    cls.from_annotations(arg)
+                                    cls.from_annotation(arg)
                                     for arg in args
                                     if arg is not type(None)
                                 ),
                             ),
                         ),
                     )
-                return cls(type=Optional, of_type=(cls.from_annotations(args[0]),))
+                return cls(type=Optional, of_type=(cls.from_annotation(args[0]),))
             new_args: list[TypeHinter] = []
             for arg in args:
-                new_args.append(cls.from_annotations(arg))
+                new_args.append(cls.from_annotation(arg))
 
             return cls(type=get_origin(tp), of_type=tuple(new_args))  # type: ignore
         return cls(type=tp)
@@ -145,6 +140,14 @@ T = TypeVar("T")
 
 
 def ensure(inst: T, tp: Type[T]) -> T:
+    """Checks if an instance is of a type and return the instance, otherwise
+    raise TypeError.
+
+    :param inst: object instance.
+    :param tp: type for isinstance check.
+    :raises: TypeError.
+    :return: the instance.
+    """
     if not isinstance(inst, tp):
         raise TypeError(f"{inst} is not of type {tp}")
     return inst

@@ -15,13 +15,16 @@ you can work with.
 from typingref import TypeHinter
 from typing import Union
 
+
 class MyType:
     ...
+
 
 def foo(p: Union[int, str, float]) -> MyType:
     ...
 
-p_type = TypeHinter.from_annotations(foo.__annotations__['p'])
+
+p_type = TypeHinter.from_annotation(foo.__annotations__['p'])
 
 if p_type.is_union():
     for t in p_type.of_type:
