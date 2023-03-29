@@ -5,6 +5,7 @@
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/nrbnlulu/typingref/tests.yml?style=for-the-badge)
 [![PyPI](https://img.shields.io/pypi/v/typingref?style=for-the-badge)
 ](https://pypi.org/project/typingref/)
+![Codecov](https://img.shields.io/codecov/c/github/nrbnlulu/typingref?style=for-the-badge)
 
 Modern Python libraries often use type annotations,
 this library is intended to help "de/serialize" Python type hints to something
