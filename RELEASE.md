@@ -1,3 +1,3 @@
 Release type: minor
 
-First release!
+First release...
