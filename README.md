@@ -3,6 +3,8 @@
 *Introspect Python type annotation, with ease.*
 
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/nrbnlulu/typingref/tests.yml?style=for-the-badge)
+[![PyPI](https://img.shields.io/pypi/v/typingref?style=for-the-badge)
+](https://pypi.org/project/typingref/)
 
 Modern Python libraries often use type annotations,
 this library is intended to help "de/serialize" Python type hints to something
