@@ -1,5 +1,5 @@
 import inspect
-from typing import Any, List, Optional, Type, TypeVar, Union, get_args, get_origin
+from typing import Any, ForwardRef, List, Optional, Type, TypeVar, Union, get_args, get_origin
 
 
 class UnsetType:
@@ -59,9 +59,11 @@ class TypeHinter:
     @classmethod
     def from_annotation(cls, tp: Any, ns: Optional[dict] = None) -> "TypeHinter":
         # future annotation
+        ns = ns if ns else {}
         if isinstance(tp, str):
-            return TypeHinter.from_string(tp, ns or {})
-
+            return TypeHinter.from_string(tp, ns)
+        if isinstance(tp, ForwardRef):
+            return TypeHinter.from_string(tp.__forward_arg__, ns)
         if args := get_args(tp):
             # handle optional
             if type(None) in args:
@@ -73,17 +75,17 @@ class TypeHinter:
                             cls(
                                 type=Union,
                                 of_type=tuple(
-                                    cls.from_annotation(arg)
+                                    cls.from_annotation(arg, ns)
                                     for arg in args
                                     if arg is not type(None)
                                 ),
                             ),
                         ),
                     )
-                return cls(type=Optional, of_type=(cls.from_annotation(args[0]),))
+                return cls(type=Optional, of_type=(cls.from_annotation(args[0], ns),))
             new_args: list[TypeHinter] = []
             for arg in args:
-                new_args.append(cls.from_annotation(arg))
+                new_args.append(cls.from_annotation(arg, ns))
 
             return cls(type=get_origin(tp), of_type=tuple(new_args))  # type: ignore
         return cls(type=tp)

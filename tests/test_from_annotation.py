@@ -53,15 +53,30 @@ def test_nested():
 
 
 @patch.object(TypeHinter, TypeHinter.from_string.__name__)
-def test_from_annotation_fall_back_to_from_string(mock):
+def test_fall_back_to_from_string(mock):
     tp = "list[Union[str, int]]"
     TypeHinter.from_annotation(tp)
     assert mock.called
 
 
-def test_from_annotation_with_fref_ns():
+def test_with_fref_ns():
     class MyType:
         ...
 
     th = TypeHinter.from_annotation("Optional[MyType]", locals())
+    assert th.of_type[0].type is MyType
+
+
+def test_mixed_frefs_and_non_frefs():
+    class MyType:
+        ...
+
+    def f(a: Optional["MyType"]):
+        ...
+
+    annot = Optional["MyType"]
+    th = TypeHinter.from_annotation(annot, locals())
+    assert th.of_type[0].type is MyType
+    annot = f.__annotations__["a"]
+    th = TypeHinter.from_annotation(annot, locals())
     assert th.of_type[0].type is MyType
