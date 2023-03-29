@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "typingref"
-version = "0.101.0"
+version = "0.102.0"
 packages = [{ include = "typingref" }]
 description = "Introspect Python type annotation, with ease."
 authors = ["Nir <88795475+nrbnlulu@users.noreply.github.com>"]
