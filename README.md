@@ -1,5 +1,6 @@
+![logo.png](docs%2Fassets%2Flogo.png)
 
-### ![logo.png](docs%2Fassets%2Flogo.png) ypingRef
+### TypingRef
 
 *Introspect Python type annotation, with ease.*
 
