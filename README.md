@@ -1,6 +1,5 @@
-![logo.png](docs%2Fassets%2Flogo.png)
+![header.png](docs%2Fassets%2Fheader.png)
 
-### TypingRef
 
 *Introspect Python type annotation, with ease.*
 
