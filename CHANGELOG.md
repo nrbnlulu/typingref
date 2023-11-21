@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+0.103.1 - 2023-11-21
+--------------------
+
+Add support for Python 3.12 (not the new typing mechanism though.)
+
+Contributed by [ניר](https://github.com/nrbnlulu) via [PR #69](https://github.com/nrbnlulu/typingref/pull/69/)
+
+
 0.103.0 - 2023-03-29
 --------------------
 
