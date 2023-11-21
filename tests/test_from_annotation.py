@@ -10,7 +10,6 @@ def test_simple_type(tp):
     th = TypeHinter.from_annotation(tp)
     assert th.type is tp
 
-
 @pytest.mark.parametrize("tp", [int, float, str, bool, object])
 def test_future_annotations(tp):
     th = TypeHinter.from_annotation(tp.__name__)
